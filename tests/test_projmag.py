@@ -7,6 +7,7 @@ from git import Repo
 import tempfile
 import pytest
 import re
+import os
 
 
 def test_version():
@@ -55,9 +56,10 @@ def projs():
         dirs=['0001-something', '0001-nothing', '0002-everything', '0004-thing',
                 '0004-thething', 'shiteshite']
         [(Path(d) / o).mkdir(parents=True, exist_ok=True) for o in dirs]
-        yield [Project(Path(d) / o) for o in dirs]
+        yield [Project(Path(d) / o) for o in dirs], d
 
 def test_cmp(projs):
+    projs,*_ = projs
     assert projs[0] == projs[1]
     assert projs[1] < projs[2]
     assert projs[2] > projs[0]
@@ -66,3 +68,12 @@ def test_cmp(projs):
     assert projs[5] > projs[4]
     assert projs[5] > projs[0]
     assert projs[5] > projs[1]
+
+def test_rename(projs):
+    projs,d=projs
+    p0 = projs[-1]
+    p0.rename('0009')
+    assert '0009-shiteshite' in os.listdir(d)
+    p0 = projs[0]
+    p0.rename('0019')
+    assert '0019-something' in os.listdir(d)

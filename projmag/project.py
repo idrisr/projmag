@@ -16,6 +16,12 @@ class Project:
     def __init__(self, path:Path):
         self.path = Path(path)
 
+    def rename(self, prefix):
+        regex = re.compile(r'(^\d+-?)?(.*)')
+        name=re.search(regex, self.path.name).groups()[-1]
+        dest = self.path.parent / f'{prefix}-{name}'
+        self.path.rename(dest)
+
     @property
     def number(self): 
         if self.has_valid_name: return int(self.path.name[:4])

@@ -1,8 +1,10 @@
 from projmag.project import Project
 from projmag.directory import Directory
 from pathlib import Path
+
 import tempfile
 import pytest
+import os
 
 
 @pytest.fixture
@@ -49,6 +51,7 @@ def test_dupes(dir_none):
 def test_dupes2(dir_):
     assert len(dir_.dupes) == 4
     assert len(dir_) == 5
+    assert isinstance(dir_.dupes[0], Project)
 
 
 def test_get_item(dir_, dir_none):
@@ -72,3 +75,15 @@ def test_next_name(dir_, dir_none, dir_missing):
     assert dir_.nextname == '0000'
     assert dir_none.nextname == '0007'
     assert dir_missing.nextname == '0003'
+
+def test_fix_projects(dir_none, dir_):
+    dir_none.fix_names()
+    assert len(dir_none.invalid_projects) == 0
+    assert '0000-yeah' in os.listdir(dir_none.path)
+    assert '0007-whatwhat' in os.listdir(dir_none.path)
+
+    dir_.fix_names()
+    assert len(dir_.invalid_projects) == 0
+    assert len(dir_.dupes) == 0
+    assert '0000-nothing' in os.listdir(dir_.path)
+    assert '0003-something' in os.listdir(dir_.path)
