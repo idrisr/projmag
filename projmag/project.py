@@ -5,6 +5,8 @@ from functools import total_ordering
 import re
 import os
 from cleo import Command
+import logging
+logger = logging.getLogger()
 
 class InvalidProjectName(Exception):
     """ invalid project name """
@@ -20,6 +22,7 @@ class Project:
         regex = re.compile(r'(^\d+-?)?(.*)')
         name=re.search(regex, self.path.name).groups()[-1]
         dest = self.path.parent / f'{prefix}-{name}'
+        logger.debug(f"Renaming {self.path} to {dest}")
         self.path.rename(dest)
 
     @property

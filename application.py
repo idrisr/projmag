@@ -1,7 +1,7 @@
-from projmag.directory import ListCommand
-from projmag.directory import DupeCommand
-from projmag.directory import NextCommand
-from projmag.directory import RenameCommand
+from projmag.commands import ListCommand
+from projmag.commands import DupeCommand
+from projmag.commands import NextCommand
+from projmag.commands import RenameCommand
 from cleo import Application
 
 application = Application()
