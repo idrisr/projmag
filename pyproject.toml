@@ -6,6 +6,7 @@ authors = ["Idris Raja <idris.raja@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.7"
+debjig = { git = "https://github.com/idrisr/debjig.git", branch='main' }
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"

@@ -29,7 +29,7 @@ def test_has_valid_name(name,value,number):
     if p.has_valid_name:
         assert p.number == number
     else: 
-        with raises(InvalidProjectName): p.number
+        assert p.number is None
 
 def test_has_git():
     with tempfile.TemporaryDirectory() as d:
@@ -40,10 +40,6 @@ def test_has_git():
     with tempfile.TemporaryDirectory() as d:
         p = Project(d)
         assert not p.has_git
-
-def test_has_remote():
-    p = Project(".")
-    assert not p.has_remote
 
 def test_repr():
     with tempfile.TemporaryDirectory() as d:
@@ -60,14 +56,19 @@ def projs():
 
 def test_cmp(projs):
     projs,*_ = projs
-    assert projs[0] == projs[1]
+    assert projs[0] > projs[1]
     assert projs[1] < projs[2]
     assert projs[2] > projs[0]
-    assert projs[3] == projs[4]
+    assert projs[4] < projs[3]
     assert projs[3] > projs[2]
     assert projs[5] > projs[4]
     assert projs[5] > projs[0]
     assert projs[5] > projs[1]
+
+def test_cmp2():
+    p1 = Project('0001-something')
+    p2 = Project('0001-nothing')
+    assert p2 < p1
 
 def test_rename(projs):
     projs,d=projs
@@ -77,3 +78,9 @@ def test_rename(projs):
     p0 = projs[0]
     p0.rename('0019')
     assert '0019-something' in os.listdir(d)
+
+
+def test_lt(projs):
+    projs,d=projs
+    projs = sorted(projs)
+    assert 'shiteshite' in projs[-1].path.as_posix()

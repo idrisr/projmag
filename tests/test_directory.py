@@ -76,6 +76,7 @@ def test_next_name(dir_, dir_none, dir_missing):
     assert dir_none.nextname == '0007'
     assert dir_missing.nextname == '0003'
 
+#  @pytest.mark.skip(reason="come back to this")
 def test_fix_projects(dir_none, dir_):
     dir_none.fix_names()
     assert len(dir_none.invalid_projects) == 0
@@ -85,5 +86,19 @@ def test_fix_projects(dir_none, dir_):
     dir_.fix_names()
     assert len(dir_.invalid_projects) == 0
     assert len(dir_.dupes) == 0
-    assert '0000-nothing' in os.listdir(dir_.path)
-    assert '0003-something' in os.listdir(dir_.path)
+    assert '0001-nothing' in os.listdir(dir_.path)
+    assert '0000-something' in os.listdir(dir_.path)
+
+
+@pytest.fixture
+def dir_big():
+    with tempfile.TemporaryDirectory() as d:
+        [(Path(d) / f'{o:04d}-asdf').mkdir(parents=True, exist_ok=True) for o in
+                range(50)]
+        yield Directory(Path(d))
+
+@pytest.mark.timeout(4)
+def test_slow(dir_big):
+    # on the full nassync dir everything is slow. probably because projects is 
+    # is a property. See if I can recreate that in a test
+    dir_big.fix_names()

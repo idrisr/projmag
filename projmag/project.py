@@ -1,11 +1,15 @@
 from pathlib import Path
 from git import Repo, InvalidGitRepositoryError
 from functools import total_ordering
+from cleo import Command
+from typing import Optional
 
 import re
 import os
-from cleo import Command
 import logging
+
+
+
 logger = logging.getLogger()
 
 class InvalidProjectName(Exception):
@@ -28,7 +32,7 @@ class Project:
     @property
     def number(self): 
         if self.has_valid_name: return int(self.path.name[:4])
-        else: raise InvalidProjectName
+        else: return None 
 
     @property
     def has_valid_name(self): return bool(re.match(self.valid_reg, self.path.name))
@@ -43,11 +47,7 @@ class Project:
     def __repr__(self): return repr(self.path.as_posix()).replace("'", "")
 
     def __lt__(self, other):
-        if self.has_valid_name and other.has_valid_name:
-            return self.number < other.number
-        else: return False
+        return self.path.name < other.path.name
 
     def __eq__(self, other):
-        if self.has_valid_name and other.has_valid_name: 
-            return self.number == other.number
-        else: return False
+        return self.path.name == other.path.name
