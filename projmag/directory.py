@@ -13,10 +13,6 @@ logging.basicConfig(stream=sys.stdout)
 logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)
 
-logger.debug("here we are")
-
-global calls
-calls = 0
 
 class Directory:
     def __init__(self, path=Path.home() / "nassync"):
